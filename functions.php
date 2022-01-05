@@ -61,15 +61,29 @@ function isEmailValid($email){
 
 
 //Iskirtpti pirmas 3 raides is vardo ir pavardes.
-$name = 'Vardas';
-$surname = 'Pavardenis';
+$name = 'Edgar';
+$surname = 'Kolesnikov';
 
 function getNickName($name, $surname){
     $firstName = substr($name, 0,3);
     $firstSurname = substr($surname, 0 , 3);
-    return $firstName.$firstSurname;
+    return strtolower($firstName.$firstSurname);
 }
-echo getNickName($name, $surname);
+echo getNickName($name, $surname). rand(1,100);
+echo "<br>";
+
+$title = 'Random antraste kuri bus slug';
+$slug = getslug($title);
+function getslug($string){
+    $string = str_replace(" ", "-", $string);
+        $string = strtolower($string);
+    return $string;
+}
+
+echo $slug;
+
+//header ("refresh:1"); - refresh page every 1s
+
 
 
 
