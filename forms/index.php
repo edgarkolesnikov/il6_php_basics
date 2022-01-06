@@ -10,6 +10,7 @@
             <li><a href="#">About us</a></li>
             <li><a href="#">Some pages</a></li>
             <li><a href="#">Login</a></li>
+            <li><a href="registration.php">Registracija</a></li>
         </ul>
     </div>
         <div class ="content">
