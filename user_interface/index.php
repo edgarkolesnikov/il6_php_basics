@@ -12,12 +12,11 @@
         <form action="registration.php" method="post">
             <input type="text" name="first_name" placeholder="Vardas" required="required"><br>
             <input type="text" name="last_name" placeholder="Pavarde" required="required"><br>
-            <input type="text" name="nick_name" placeholder="Vartotojo vardas" required="required"><br>
             <input type="email" name="email" placeholder="Emailas" required="required"><br>
             <input type="password" name="password1" placeholder="Slaptazodis" required="required"><br>
             <input type="password" name="password2" placeholder="Pakartokite slaptazodi" required="required"><br>
             <label for="agree_terms">Sutinku su registracijos taisyklemis.</label>
-            <input type="checkbox" name="agree_terms" id="agree_terms" required="required">
+            <input type="checkbox" name="agree_terms" id="agree_terms">
             <input type="submit" value="Registruotis">
         </form>
 

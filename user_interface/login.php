@@ -11,7 +11,7 @@ $login = false;
 
 foreach ($users as $user){
 
-    if($password === $user[3] && $email === $user[2]){
+    if($password === $user[3] && $email === $user[EMAIL_FIELD_KEY]){
         $login = true;
         break;
     }
