@@ -26,25 +26,32 @@ if (isset($_POST['play'])) {
 
     if ($playerChoice == $pcChoice) {
         $results = 'Lygiosios';
-        echo $playerChoice. ' '.$pcChoice. ' '.$results;
+        echo $playerChoice . ' ' . $pcChoice . ' ' . $results;
 
-    } elseif ($playerChoice == TOOL_ROCK && $pcChoice == TOOL_SCISSORS){
+    } elseif ($playerChoice == TOOL_ROCK && $pcChoice == TOOL_SCISSORS) {
         $results = 'Laimejote';
-        echo $playerChoice. ' '.$pcChoice. ' '.$results;
+        echo $playerChoice . ' ' . $pcChoice . ' ' . $results;
 
     } elseif ($playerChoice == TOOL_PAPER && $pcChoice == TOOL_ROCK) {
         $results = 'Laimejote';
-        echo $playerChoice. ' '.$pcChoice. ' '.$results;
+        echo $playerChoice . ' ' . $pcChoice . ' ' . $results;
 
     } elseif ($playerChoice == TOOL_SCISSORS && $pcChoice = TOOL_PAPER) {
         $results = 'Laimejote';
-        echo $playerChoice. ' '.$pcChoice. ' '.$results;
+        echo $playerChoice . ' ' . $pcChoice . ' ' . $results;
 
     } else {
         $results = 'Pralaimejote';
-        echo $playerChoice. ' '.$pcChoice. ' '.$results;
+        echo $playerChoice . ' ' . $pcChoice . ' ' . $results;
     }
     $data = [];
     $data[] = [$playerChoice, $pcChoice, $results];
     writeToCsv($data, 'result.csv');
+
 }
+
+
+
+//isvesti statistika kas daugiausiai laimejo per paskutinius 10 zaidimu
+
+
