@@ -1,17 +1,5 @@
-<html>
-    <head>
-        <title>Gumtree - Trash to sell</title>
-    </head>
+<?php
 
-    <body>
-    <duv class="header">
-        <ul class="menu">
-            <li><a href="create.php">Add ad</a></li>
-        </ul>
-    </duv>
+include 'parts/header.php';
+include 'parts/footer.php';
 
-
-
-    </body>
-
-</html>
