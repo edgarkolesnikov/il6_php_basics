@@ -17,9 +17,21 @@ $sql = 'SELECT * FROM ads';
     echo '<pre>';
     $rez = $conn->query($sql);
     $ads = $rez->fetchAll();
-        print_r($ads);
+//        print_r($ads);
 ?>
 <html>
+    <body>
+    <?php foreach($ads as $ad) : ?>
+<div class="product-wrap">
+    <div class="name">
+        <?php echo $ad['title']. '<pre>'. $ad['description'] .'<pre>'.$ad['price'];?>
+    </div>
+    <hr>
+</div>
+<?php endforeach ?>
+    </body>
+
+
 
 
 
