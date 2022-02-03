@@ -1,0 +1,18 @@
+{
+    "name": "edgar/skelbimai",
+    "description": "Skelbimu portalas",
+    "type": "project",
+
+    "authors": [
+        {
+            "name": "edgarkolesnikov",
+            "email": "edgarkolesnikow@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "": "app/code"
+        }
+    },
+    "require": {}
+}
