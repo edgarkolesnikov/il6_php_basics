@@ -72,10 +72,10 @@ if(isset($_SERVER['PATH_INFO']) && $_SERVER['PATH_INFO'] !== '/'){
                 $obj ->$method();
             }
         }else{
-            echo '404';
+            echo '404.1';
         }
     }else{
-        echo "404";
+        echo "404.2";
     }
 
 

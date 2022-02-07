@@ -45,7 +45,7 @@ class FormHelper
 
     public function textArea($name, $placeholder)
     {
-        $this->form .= '<textarea name="' . $name . '">' . $placeholder . '</textarea>';
+        $this->form .= '<textarea name="' . $name . '"Placeholder="'. $placeholder . '">' . '</textarea>'.'<br><br>';
     }
 
     public function select($data)

@@ -97,12 +97,13 @@ class User
 
     public function save()
     {
-        if(!isset($this->id)){
+        if (!isset($this->id)) {
             $this->create();
-        }else{
+        } else {
             $this->update();
         }
     }
+
     private function create()
     {
         $data = [
@@ -111,18 +112,26 @@ class User
             'email' => $this->email,
             'password' => $this->password,
             'phone' => $this->phone,
-            'city_id' => $this->cityId,
-
+            'city_id' => $this->cityId
         ];
 
         $db = new DBHelper();
-        $db-> insert('users', $data)->exec();
+        $db->insert('users', $data)->exec();
     }
 
     private function update()
     {
+        $data = [
+            'name' => $this->name,
+            'last_name' => $this->lastName,
+            'email' => $this->email,
+            'password' => $this->password,
+            'phone' => $this->phone,
+            'city_id' => $this->cityId
+        ];
+
         $db = new DBHelper();
-        $db->update('users', $data, $id)->exec();
+        $db->update('users', $data)->where('id', $this->getId())->exec();
     }
 
     public function load($id)

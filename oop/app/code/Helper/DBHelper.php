@@ -89,7 +89,7 @@ class DBHelper
         return $this;
     }
 
-    public function update($table, $data, $id)
+    public function update($table, $data)
     {
         $this-> sql .='UPDATE ' . $table .' SET ';
         $values = [];
