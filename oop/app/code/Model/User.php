@@ -24,6 +24,24 @@ class User
 
     private $city;
 
+    private $active;
+
+    /**
+     * @return mixed
+     */
+    public function getActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * @param mixed $active
+     */
+    public function setActive($active)
+    {
+        $this->active = $active;
+    }
+
     public function getID()
     {
         return $this->id;
@@ -112,7 +130,8 @@ class User
             'email' => $this->email,
             'password' => $this->password,
             'phone' => $this->phone,
-            'city_id' => $this->cityId
+            'city_id' => $this->cityId,
+            'status' =>$this->active
         ];
 
         $db = new DBHelper();
@@ -127,7 +146,8 @@ class User
             'email' => $this->email,
             'password' => $this->password,
             'phone' => $this->phone,
-            'city_id' => $this->cityId
+            'city_id' => $this->cityId,
+            'status' => $this->active
         ];
 
         $db = new DBHelper();
@@ -145,6 +165,7 @@ class User
         $this->password = $data['password'];
         $this->phone = $data['phone'];
         $this->cityId = $data['city_id'];
+        $this->status = $data['active'];
         $city = new City();
         $this->city = $city->load($this->cityId); // galesim is userio gauti miesto pavadinima o ne tik id.
         return $this;
@@ -171,6 +192,7 @@ class User
             ->from('users')
             ->where('email',$email)
             ->andWhere('password', $pass)
+            ->andWhere('active',1)
             ->getOne();
         return isset($rez['id']) ? $rez['id'] : false;          // cia tas pats  kas if apacioje,
                                                                 // jeigu viskas ok: ? - true, : - false
@@ -179,6 +201,19 @@ class User
 //            return $rez['id'];
 //        }else{
 //            return false;
+    }
+    public static function getAllUser()
+    {
+        $db = new DBHelper();
+        $data= $db->select()->from('users')->get();
+        $users = [];
+        foreach($data as $element)
+        {
+            $user = new User();
+            $user->load($element['id']);
+            $users[] = $user;
+        }
+        return $users;
     }
 
 

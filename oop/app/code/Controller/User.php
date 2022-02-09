@@ -8,17 +8,18 @@ use Helper\Validator;
 use Helper\Url;
 use Model\User as UserModel;
 use Model\City;
+use Core\AbstractControler;
 
-class User
+class User extends AbstractControler
 {
     public function show($id)
     {
-        echo 'User controller ID' . $Id;
+        echo 'User controller ID' . $id;
     }
 
     public function register()  //Registracijos forma
     {
-        $db = new DBHelper();
+//        $db = new DBHelper();
 //        $data = [                     Testavimas ar veikia update kodas.
 //            'name'=>'Tomas',
 //            'last_name' => 'bulve'
@@ -57,6 +58,11 @@ class User
             'type' => 'password',
             'placeholder' => 'Pakartokite slaptazodi'
         ]);
+        $form->input([
+            'name' => 'active',
+            'type' => 'number',
+            'placeholder' => 'Aktyvus/neaktyvus'
+        ]);
 
         $cities = City::getCities();
         $options = [];
@@ -71,7 +77,11 @@ class User
             'type' => 'submit',
             'value' => 'register'
         ]);
-        echo $form->getForm();
+
+
+        $this->data['form'] = $form->getForm();
+
+        $this->render('user/register');
 
     }
 
@@ -96,7 +106,9 @@ class User
             'type' => 'submit',
             'value' => 'login'
         ]);
-        echo $form->getForm();
+        $this->data['form'] = $form->getForm();
+
+        $this->render('user/login');
 
     }
 
@@ -113,6 +125,7 @@ class User
             $user->setPassword(md5($_POST['password']));
             $user->setEmail($_POST['email']);
             $user->setCityId($_POST['city_id']);
+            $user->setStatus($_POST['active']);
             $user->save();
             Url::redirect('user/login');
         } else {
@@ -179,6 +192,7 @@ class User
             'type' => 'password',
             'placeholder' => '********'
         ]);
+
         $cities = City::getCities();
         $options = [];
         foreach ($cities as $city) {
@@ -192,12 +206,20 @@ class User
             ]);
 
         $form->input([
+            'name' => 'active',
+            'type' => 'number',
+            'placeholder' => 'Aktyvus/Neaktyvus'
+        ]);
+
+        $form->input([
             'name' => 'update',
             'type' => 'submit',
             'value' => 'Edit'
         ]);
 
-        echo $form->getForm();
+        $this->data['form'] = $form->getForm();
+
+        $this->render('user/edit');
     }
 
     public function update()
@@ -219,13 +241,21 @@ class User
                     $user->setEmail($_POST['email']);
                 }
             }
+            $user->setStatus($_POST['active']);
             $user->save();
             Url::redirect('user/edit');
+
+
+        $this->render('user/update');
     }
 
     public function logout()
     {
         session_destroy();
+        Url::redirect('');
     }
+
+
+
 
 }
