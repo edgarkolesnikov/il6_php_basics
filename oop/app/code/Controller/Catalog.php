@@ -40,12 +40,6 @@ class Catalog extends AbstractControler
             'placeholder' => 'Nuoroda nuotraukai'
         ]);
 
-        $form->input([
-            'name' => 'active',
-            'type' => 'text',
-            'placeholder' => 'Aktyvus/neaktyvus'
-        ]);
-
 
         $form->input([
             'type' => 'submit',
@@ -120,13 +114,6 @@ class Catalog extends AbstractControler
             'type' => 'text',
             'placeholder' => 'Nuoroda nuotraukai',
             'value' => $ad->getImage()
-        ]);
-
-        $form->input([
-            'name' => 'active',
-            'type' => 'number',
-            'placeholder' => 'Aktyvus/Neaktuvus',
-            'value' => $ad->getActive()
         ]);
 
         $form->input([

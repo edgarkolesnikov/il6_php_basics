@@ -222,7 +222,7 @@ class Ad
             'type_id' => $this->typeId,
             'user_id' => $this->userId,
             'image' => $this->image,
-            'active' => $this->active
+            'active' => 1
         ];
 
         $db->update('ads', $data)->where('id', $this->id)->exec();
@@ -241,7 +241,7 @@ class Ad
             'type_id' => $this->typeId,
             'user_id' => $this->userId,
             'image' => $this->image,
-            'active' => $this->active
+            'active' => 1
         ];
         $db->insert('ads', $data)->exec();
     }

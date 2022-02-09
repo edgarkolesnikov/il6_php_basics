@@ -58,11 +58,7 @@ class User extends AbstractControler
             'type' => 'password',
             'placeholder' => 'Pakartokite slaptazodi'
         ]);
-        $form->input([
-            'name' => 'active',
-            'type' => 'number',
-            'placeholder' => 'Aktyvus/neaktyvus'
-        ]);
+
 
         $cities = City::getCities();
         $options = [];
@@ -205,11 +201,7 @@ class User extends AbstractControler
             'selected'=>$user->getCityId()
             ]);
 
-        $form->input([
-            'name' => 'active',
-            'type' => 'number',
-            'placeholder' => 'Aktyvus/Neaktyvus'
-        ]);
+
 
         $form->input([
             'name' => 'update',
