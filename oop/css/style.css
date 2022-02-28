@@ -8,6 +8,19 @@ nav ul{
 }
 header{
     border: solid 1px #000;
+    padding: 10px;
+}
+
+footer{
+    height:24px;
+    width: 100%;
+    background-image: none;
+    background-repeat: repeat;
+    background-attachment: scroll;
+    background-position: 0% 0%;
+    position: fixed;
+    bottom: 20pt;
+
 }
 nav ul li{
     margin-right: 20px;
@@ -18,7 +31,96 @@ nav ul li a {
     font-size:20px;
 }
 
-footer{
-    border-top: 1px solid #000000;
+.wrapper{
+    border:1px solid #000;
+    padding: 10px;
+    margin: 10px auto;
+}
+
+.post-content .image-wrapper img{
+    width:500px;
+}
+
+.post-content .image-wrapper{
     text-align: center;
+}
+
+.post-content .price{
+    color: #ff0000;
+    font-weight: 800;
+    font-size: 25px;
+}
+
+.post-content .details{
+    background: #ffffff;
+    padding: 10px;
+}
+
+header .sliding-part{
+    background: #ff0000;
+    color: #fff;
+    font-weight: 500;
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+}
+.edit{
+
+    font-weight: 800;
+    font-size: 20px;
+}
+
+.box .column-right{
+    float: right;
+    width: 550px;
+}
+.box .column-left{
+    float: left;
+    width: 550px;
+}
+
+.box .column-left .image-wrapper img{
+    width: 250px;
+    display: inline-block;
+
+}
+.box .column-right .image-wrapper img{
+    width: 250px;
+    display: inline-block;
+
+}
+
+.wrapper .catalog .box img{
+    width: 40%;
+}
+
+.comments{
+    color: blue;
+    font-size: 1.5em;
+}
+
+.wrapper .comments{
+    border-style: groove;
+}
+
+.wrapper .single-comment{
+    border-style: ridge;
+    padding: 10px;
+    background: aliceblue;
+}
+
+.wrapper .single-comment .comment-credentials{
+    border: 1px solid green;
+    padding: 10px;
+    background: aliceblue;
+}
+
+.wrapper .single-comment .comment-itself{
+    border: 1px solid darkolivegreen;
+    padding: 5px;
+    margin: 10px;
+}
+
+body{
+    background: #cccccc;
 }

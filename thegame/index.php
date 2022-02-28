@@ -1,5 +1,6 @@
 <?php
 
+
 echo 'The Game';
 echo '<br>';
 include 'core.php';

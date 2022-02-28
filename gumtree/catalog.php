@@ -14,26 +14,26 @@ try {
 }
 
 $sql = 'SELECT * FROM ads';
-    echo '<pre>';
+//    echo '<pre>';
     $rez = $conn->query($sql);
     $ads = $rez->fetchAll();
 //        print_r($ads);
 ?>
 <html>
     <body>
-    <?php foreach($ads as $ad) : ?>
-<div class="product-wrap">
-    <div class="name">
-        <?php echo $ad['title']. '<pre>'. $ad['description'] .'<pre>'.$ad['price'];?>
-    </div>
-    <hr>
-</div>
-<?php endforeach ?>
+    <div class="wrapper">
+    <?php foreach($ads as $ad){
+
+        echo '<div class="content-box">';
+        echo '<div class="title">'.$ad['title'].'</div>';
+        echo '<div class="price">'.$ad['price'].'</div>';
+        echo '<div class="year">'.$ad['year'].'</div>';
+        echo '<a href="http://127.0.0.1:8000/gumtree/ad.php?id='.$ad['id'].'">More</a>';
+        echo '</div>';
+         echo '<hr>';
+        }
+        echo '<div>'; ?>
     </body>
-
-
-
-
 
 
 <?php include 'parts/footer.php'; ?>

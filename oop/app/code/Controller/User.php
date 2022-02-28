@@ -2,6 +2,7 @@
 
 namespace Controller;
 
+use Core\Interfaces\ControllerInterface;
 use Helper\DBHelper;
 use Helper\FormHelper;
 use Helper\Validator;
@@ -10,8 +11,14 @@ use Model\User as UserModel;
 use Model\City;
 use Core\AbstractControler;
 
-class User extends AbstractControler
+class User extends AbstractControler implements ControllerInterface
 {
+    public function index()
+    {
+        $this->data['users'] = UserModel::getAllUsers();
+        $this->render('user/list');
+    }
+
     public function show($id)
     {
         echo 'User controller ID' . $id;
@@ -19,14 +26,6 @@ class User extends AbstractControler
 
     public function register()  //Registracijos forma
     {
-//        $db = new DBHelper();
-//        $data = [                     Testavimas ar veikia update kodas.
-//            'name'=>'Tomas',
-//            'last_name' => 'bulve'
-//        ];
-//        $db->update('users', $data)->where('id', 29)->exec();
-
-
         $form = new FormHelper('user/create', 'POST');
         $form->input([
             'name' => 'name',
@@ -59,7 +58,6 @@ class User extends AbstractControler
             'placeholder' => 'Pakartokite slaptazodi'
         ]);
 
-
         $cities = City::getCities();
         $options = [];
         foreach ($cities as $city) {
@@ -74,13 +72,9 @@ class User extends AbstractControler
             'value' => 'register'
         ]);
 
-
         $this->data['form'] = $form->getForm();
-
         $this->render('user/register');
-
     }
-
 
     public function login()     //Logino forma
     {
@@ -105,14 +99,13 @@ class User extends AbstractControler
         $this->data['form'] = $form->getForm();
 
         $this->render('user/login');
-
     }
 
     public function create()
     {
         $passMatch = Validator::checkPassword($_POST['password'], $_POST['password2']);
         $isEmailValid = Validator::checkEmail($_POST['email']);
-        $isEmailUnic = UserModel::emailUnic($_POST['email']);
+        $isEmailUnic = UserModel::isValueUnic('email',$_POST['email']);
         if ($passMatch && $isEmailValid && $isEmailUnic) {
             $user = new UserModel();
             $user->setName($_POST['name']);
@@ -121,7 +114,8 @@ class User extends AbstractControler
             $user->setPassword(md5($_POST['password']));
             $user->setEmail($_POST['email']);
             $user->setCityId($_POST['city_id']);
-            $user->setStatus($_POST['active']);
+            $user->setActive(1);
+            $user->setRoleId(0);
             $user->save();
             Url::redirect('user/login');
         } else {
@@ -140,7 +134,7 @@ class User extends AbstractControler
             $_SESSION['loged_in'] = true;
             $_SESSION['user_id'] = $userId;
             $_SESSION['user'] = $user;
-            Url::redirect('/'); //i homepage nuves mus po logino
+            Url::redirect(''); //i homepage nuves mus po logino
 
         } else {
             Url::redirect('user/login');
@@ -200,9 +194,6 @@ class User extends AbstractControler
             'options' => $options,
             'selected'=>$user->getCityId()
             ]);
-
-
-
         $form->input([
             'name' => 'update',
             'type' => 'submit',
@@ -212,6 +203,7 @@ class User extends AbstractControler
         $this->data['form'] = $form->getForm();
 
         $this->render('user/edit');
+
     }
 
     public function update()
@@ -229,11 +221,10 @@ class User extends AbstractControler
                 $user->setPassword(md5($_POST['password']));
             }
             if($user->getEmail() != $_POST['email']){
-                if(Validator::checkEmail($_POST['email']) && UserModel::emailUnic($_POST['email'])){
+                if(Validator::checkEmail($_POST['email']) && UserModel::isValueUnic('email', $_POST['email'])){
                     $user->setEmail($_POST['email']);
                 }
             }
-            $user->setStatus($_POST['active']);
             $user->save();
             Url::redirect('user/edit');
 
@@ -246,8 +237,5 @@ class User extends AbstractControler
         session_destroy();
         Url::redirect('');
     }
-
-
-
 
 }

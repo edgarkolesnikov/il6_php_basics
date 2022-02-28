@@ -3,13 +3,49 @@
 namespace Controller;
 
 use Core\AbstractControler;
+use Helper\DBHelper;
 use Helper\FormHelper;
 use Helper\Url;
 use Model\Ad;
+use Model\Comments;
 use Model\User as UserModel;
+use Helper\Logger;
+use Core\Interfaces\ControllerInterface;
 
-class Catalog extends AbstractControler
+class Catalog extends AbstractControler implements ControllerInterface
 {
+    public function index()
+    {
+        $this->data['count'] = Ad::count();
+        $page = 0;
+        if(isset($_GET['p'])){
+            $page = (int)$_GET['p'] -1;
+        }
+
+        $this->data['ads'] = Ad::getAllAds($page * 3, 3);
+        $this->render('catalog/list');
+
+
+//        if(isset($_GET['pageno'])){
+//            $pageno = $_GET['pageno'];
+//        } else {
+//            $pageno = 1;
+//        }
+//
+//        $nomberPerPage = 10;
+//        $offset = ($pageno - 1) * $nomberPerPage;
+//
+//        $db = new DBHelper();
+//        $data = $db->selectCount()->from('ads')->get();
+//        return $data;
+//        $totalRows = mysqli_fetch_array($data)[0];
+//        $total_pages = ceil($totalRows / $nomberPerPage);
+//
+//        $rez = $db->select()->from('ads')->limit($offset, $nomberPerPage)->get();
+//        return $rez;
+
+    }
+
     public function add()
     {
 
@@ -35,6 +71,11 @@ class Catalog extends AbstractControler
             'placeholder' => 'Metai'
         ]);
         $form->input([
+            'name' => 'vin_code',
+            'type' => 'text',
+            'placeholder' => 'Vin'
+        ]);
+        $form->input([
             'name' => 'image',
             'type' => 'text',
             'placeholder' => 'Nuoroda nuotraukai'
@@ -54,6 +95,13 @@ class Catalog extends AbstractControler
 
     public function create()
     {
+
+        $slug = Url::slug($_POST['title']);
+        while(!Ad::isValueUnic('slug', $slug))
+        {
+            $slug = $slug.rand(0,100);
+        }
+
         $ad = new Ad();
         $ad->setTitle($_POST['title']);
         $ad->setDescription($_POST['description']);
@@ -63,8 +111,11 @@ class Catalog extends AbstractControler
         $ad->setYear($_POST['year']);
         $ad->setTypeId(1);
         $ad->setUserId($_SESSION['user_id']);
-        $ad->setImage($_SESSION['image']);
-        $ad->setActive($_SESSION['active']);
+        $ad->setImage($_POST['image']);
+        $ad->setActive(1);
+        $ad->setSlug($slug);
+        $ad->setVinCode($_POST['vin_code']);
+        $ad->setDate(date('Y/m/d'));
         $ad->save();
         Url::redirect('catalog/all');
     }
@@ -108,6 +159,12 @@ class Catalog extends AbstractControler
             'placeholder' => 'Metai',
             'value' => $ad->getYear()
         ]);
+        $form->input([
+            'name' => 'vin_code',
+            'type' => 'text',
+            'placeholder' => 'Vin',
+            'value' => $ad->getVinCode()
+        ]);
 
         $form->input([
             'name' => 'image',
@@ -140,39 +197,75 @@ class Catalog extends AbstractControler
         $ad->setTypeId(1);
         $ad->setUserId($_SESSION['user_id']);
         $ad->setImage($_POST['image']);
-        $ad->setActive($_POST['active']);
+        $ad->setVinCode($_POST['vin_code']);
         $ad->save();
     }
 
 
 
-    public function all()
-    {
-        $this->data['ads'] = Ad::getAllAds();
-        $this->render('catalog/list');
-    }
 
-    public function show($id)
+
+    public function show($slug)
     {
         $ad = new Ad();
-        $ad->load($id);
+        $this->data['ad'] = $ad->loadBySlug($slug);
+        $this->data['title'] = $ad->getTitle();
+        $this->data['meta_description'] = $ad->getDescription();
+        if($this->data['ad']){
+            $ad->setVisitor($ad->getVisitor() + 1);
+            $ad-> save();
+            $form = new FormHelper('catalog/createComment', 'POST');
+            $form->textArea('comment', 'Komentaras');
+            $form->input([
+                'name' => 'button',
+                'type' => 'submit',
+                'placeholder' => 'komentuoti'
+            ]);
+            $form->input([
+                'name' => 'id',
+                'type' => 'hidden',
+                'value' => $ad->getId()
+            ]);
+            $this->data['comment'] = $form->getForm();
+            $this->data['comments'] = Comments::getAdComments($ad->getId());
 
-        $user = new UserModel();
-        $user->load($ad->getUserId());
+            $this->render('catalog/show');
 
-        $this->data['ads'] = '<h2>' . $ad->getTitle() . '</h2><br><br>' .
-            '<img width="400" src=" ' .$ad->getImage(). '">' .
-            '<h3>Description</h3>' . $ad->getDescription() . '<br>' .
-            '<br>Manufacturer: ' . $ad->getManufacturerId() . '<br>' .
-            'Model: ' . $ad->getModelId() . '<br>' .
-            'Price: ' . $ad->getPrice() . ' Eur<br>' .
-            'Year of manufacture: ' . $ad->getYear() . '<br>' .
-            'Type: ' . $ad->getTypeId() . '<br>' .
-            'Created by: ' . ucfirst($user->getName()) . ' ' .
-            ucfirst($user->getLastName()) . '<br>';
-
-        $this->render('catalog/show');
+        }else{
+            $this->render('parts/errors/error404');
+        }
     }
+
+    public function createComment()
+    {
+        $comment = new Comments();
+        $comment->setUserId($_SESSION['user_id']);
+        $comment->setMessage($_POST['comment']);
+        $comment->setIp($_SERVER['REMOTE_ADDR']);
+        $comment->setadId($_POST['id']);
+        $comment->setDate(DATE('Y/m/d'));
+        $comment->save();
+
+        $ad = new Ad();
+        $ad->load($_POST['id']);
+        Url::redirect('catalog/show/'.$ad->getSlug());
+
+    }
+
+//    public function search($value)
+//    {
+//        $db = new DBHelper();
+//        $rez = $db->select()->from('ads')
+//            ->where('title', $value)
+//            ->andWhere('description', $value)
+//            ->get();
+//        if($rez){
+//            return $rez['id'];
+//        }else{
+//            echo 'Irasu nera';
+//        }
+//    }
+
 
 
 }

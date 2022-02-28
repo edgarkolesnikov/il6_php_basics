@@ -2,13 +2,17 @@
 
 namespace Model;
 
+use Core\Interfaces\ModelInterface;
 use Helper\DBHelper;
 use Helper\FormHelper;
+use Helper\Url;
 use Model\City;
+use Model\User as UserModel;
+use Core\AbstractModel;
 
-class User
+class User extends AbstractModel implements ModelInterface
 {
-    private $id;
+    protected const TABLE = 'users';
 
     private $name;
 
@@ -26,6 +30,26 @@ class User
 
     private $active;
 
+    private $count;
+
+    private $roleId;
+
+    /**
+     * @return mixed
+     */
+    public function getCount()
+    {
+        return $this->count;
+    }
+
+    /**
+     * @param mixed $count
+     */
+    public function setCount($count)
+    {
+        $this->count = $count;
+    }
+
     /**
      * @return mixed
      */
@@ -40,11 +64,6 @@ class User
     public function setActive($active)
     {
         $this->active = $active;
-    }
-
-    public function getID()
-    {
-        return $this->id;
     }
 
     public function getName()
@@ -112,52 +131,63 @@ class User
         return $this->city;
     }
 
-
-    public function save()
+    public function getRoleId()
     {
-        if (!isset($this->id)) {
-            $this->create();
-        } else {
-            $this->update();
+        return $this->roleId;
+    }
+
+    public function setRoleId($roleId)
+    {
+        $this->roleId = $roleId;
+    }
+
+
+    public function __construct($id = null)
+    {
+        if ($id !== null) {
+            $this->load($id);
         }
     }
 
-    private function create()
+    public function assignData()
     {
-        $data = [
+        $this->data = [
             'name' => $this->name,
             'last_name' => $this->lastName,
             'email' => $this->email,
             'password' => $this->password,
             'phone' => $this->phone,
             'city_id' => $this->cityId,
-            'status' =>$this->active
+            'active' => $this->active,
+            'role_id' => $this->roleId
         ];
-
-        $db = new DBHelper();
-        $db->insert('users', $data)->exec();
     }
 
-    private function update()
-    {
-        $data = [
-            'name' => $this->name,
-            'last_name' => $this->lastName,
-            'email' => $this->email,
-            'password' => $this->password,
-            'phone' => $this->phone,
-            'city_id' => $this->cityId,
-            'status' => $this->active
-        ];
 
-        $db = new DBHelper();
-        $db->update('users', $data)->where('id', $this->getId())->exec();
-    }
+//    public function count()
+//{
+//    $email = $_POST['email'];
+//    $password = md5($_POST['password']);
+//    $user = new UserModel();
+//    $data = UserModel::load($user);
+//
+//    if($data->getEmail == $email && $data->getPassword() != $password){
+//        $db = new DBHelper();
+//        $users = $db->select()->from('users')->where('email', $email)->get();
+//        $users->setCount(+1);
+//        $user->save();
+//        URL::redirect('user/login');
+//
+//    } else {
+//        $this-> render('user/check');
+//    }
+//
+//}
 
     public function load($id)
     {
         $db = new DBHelper();
-        $data = $db->select()->from('users')->where('id',$id)->getOne();
+        $data = $db->select()->from(self::TABLE)->where('id',$id)->getOne();
         $this->id = $data['id'];
         $this->name = $data['name'];
         $this->lastName = $data['last_name'];
@@ -165,47 +195,40 @@ class User
         $this->password = $data['password'];
         $this->phone = $data['phone'];
         $this->cityId = $data['city_id'];
-        $this->status = $data['active'];
+        $this->active = $data['active'];
+        $this->roleId = $data['role_id'];
         $city = new City();
         $this->city = $city->load($this->cityId); // galesim is userio gauti miesto pavadinima o ne tik id.
         return $this;
     }
 
-    public function delete()
-    {
-        $db = new DBHelper();
-        $db->delete()->from('users')->where('id', $this->id)->exec();
-    }
-
-    public static function emailUnic($email)
-    {
-        $db = new DBHelper();
-        $rez= $db->select()->from('users')->where('email', $email)->get();
-        return empty($rez);
-    }
-
-
     public static function checkLoginCredentionals($email, $pass)
     {
-        $db =new DBHelper();
+        $db = new DBHelper();
         $rez = $db->select('id')
-            ->from('users')
-            ->where('email',$email)
+            ->from(self::TABLE)
+            ->where('email', $email)
             ->andWhere('password', $pass)
-            ->andWhere('active',1)
+            ->andWhere('active', 1)
             ->getOne();
         return isset($rez['id']) ? $rez['id'] : false;          // cia tas pats  kas if apacioje,
-                                                                // jeigu viskas ok: ? - true, : - false
+        // jeigu viskas ok: ? - true, : - false
 
-//        if(isset($rez['id'])){
-//            return $rez['id'];
-//        }else{
+//        if (isset($rez['id'])) {
+//            $user = new User();
+//            $user->load($rez['id']);
+//            if ($user->getActive()) {     //cia sitas if'as kad duotu pranesima jei useris nera aktyvus
+//                return $rez['id'];
+//            }
+//        } else {
+//            $_SESSION['message'] = 'Neveikia';
 //            return false;
+//        }
     }
     public static function getAllUser()
     {
         $db = new DBHelper();
-        $data= $db->select()->from('users')->get();
+        $data= $db->select()->from(self::TABLE)->get();
         $users = [];
         foreach($data as $element)
         {
@@ -215,8 +238,6 @@ class User
         }
         return $users;
     }
-
-
 
 
 //    public function delete($id)
