@@ -2,11 +2,14 @@
 
 namespace Model;
 
+use Core\AbstractModel;
+use Core\Interfaces\ModelInterface;
 use Helper\DBHelper;
+use Model\Url;
 
-class Ad
+class Ad extends AbstractModel implements ModelInterface
 {
-    private $id;
+    protected const TABLE = 'ads';
 
     private $title;
 
@@ -27,6 +30,66 @@ class Ad
     private $image;
 
     private $active;
+
+    private $slug;
+
+    private $vinCode;
+
+    private $date;
+
+    private $visitor;
+
+    /**
+     * @return mixed
+     */
+    public function getVisitor()
+    {
+        return $this->visitor;
+    }
+
+    /**
+     * @param mixed $visitor
+     */
+    public function setVisitor($visitor): void
+    {
+        $this->visitor = $visitor;
+    }
+
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    public function setDate($date)
+    {
+        $this->date = $date;
+    }
+
+    public function getVinCode()
+    {
+        return $this->vinCode;
+    }
+
+    public function setVinCode($vinCode)
+    {
+        $this->vinCode = $vinCode;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * @param mixed $slug
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+    }
 
     /**
      * @return mixed
@@ -58,14 +121,6 @@ class Ad
     public function setImage($image)
     {
         $this->image = $image;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
     }
 
 
@@ -197,22 +252,16 @@ class Ad
         $this->userId = $userId;
     }
 
-
-
-
-    public function save()
+    public function __construct($id = null)
     {
-        if(isset($this->id)){
-            $this->update();
-        }else{
-            $this->create();
+        if($id !== null){
+            $this->load($id);
         }
     }
 
-    public function update()
+    public function assignData()
     {
-        $db = new DBHelper();
-        $data = [
+        $this->data =  [
             'title' => $this->title,
             'description' => $this->description,
             'manufacturer_id' => $this->manufacturerId,
@@ -222,34 +271,18 @@ class Ad
             'type_id' => $this->typeId,
             'user_id' => $this->userId,
             'image' => $this->image,
-            'active' => 1
+            'active' => $this->active,
+            'slug' => $this->slug,
+            'vin_code' => $this->vinCode,
+            'date' => $this->date,
+            'visitor' => $this->visitor
         ];
-
-        $db->update('ads', $data)->where('id', $this->id)->exec();
-    }
-
-    public function create()
-    {
-        $db = new DBHelper();
-        $data = [
-            'title' => $this->title,
-            'description' => $this->description,
-            'manufacturer_id' => $this->manufacturerId,
-            'model_id' => $this->modelId,
-            'price' => $this->price,
-            'year' => $this->year,
-            'type_id' => $this->typeId,
-            'user_id' => $this->userId,
-            'image' => $this->image,
-            'active' => 1
-        ];
-        $db->insert('ads', $data)->exec();
     }
 
     public function load($id)
     {
         $db = new DBHelper();
-        $ad = $db->select()->from('ads')->where('id', $id)->getOne();
+        $ad = $db->select()->from(self::TABLE)->where('id', $id)->getOne();
         if(!empty($ad)){
             $this->id = $ad['id'];
             $this->title = $ad['title'];
@@ -261,15 +294,96 @@ class Ad
             $this->typeId = $ad['type_id'];
             $this->userId = $ad['user_id'];
             $this->image = $ad['image'];
-            $this->getActive = $ad['active'];
+            $this->active = $ad['active'];
+            $this->slug = $ad['slug'];
+            $this->vinCode = $ad['vin_code'];
+            $this->date = $ad['date'];
+            $this->visitor = $ad['visitor'];
+
         }
         return $this;
     }
-
-    public static function getAllAds()
+    public function loadBySlug($slug)
     {
         $db = new DBHelper();
-        $data= $db->select()->from('ads')->get();
+        $rez = $db->select()->from(self::TABLE)->where('slug', $slug)->getOne();
+        if(!empty($rez)){
+            $this->load($rez['id']);
+            return $this;
+        }else{
+            return false;
+        }
+    }
+
+    public static function getAllAds($page = null, $limit = null)
+    {
+        $db = new DBHelper();
+        $data= $db->select()->from(self::TABLE)
+            ->where('active', 1);
+        if($limit != null){
+            $db->limit($limit);
+        }
+        if($page != null){
+            $db->offSet($page);
+        }
+        $data = $db->get();
+        $ads = [];
+        foreach($data as $element)
+        {
+            $ad = new Ad();
+            $ad->load($element['id']);
+            $ads[] = $ad;
+        }
+        return $ads;
+    }
+
+    public static function getAdsForAdmin($page = null, $limit = null)
+    {
+        $db = new DBHelper();
+        $data= $db->select()->from(self::TABLE);
+        if($limit != null){
+            $db->limit($limit);
+        }
+        if($page != null){
+            $db->offSet($page);
+        }
+        $data = $db->get();
+        $ads = [];
+        foreach($data as $element)
+        {
+            $ad = new Ad();
+            $ad->load($element['id']);
+            $ads[] = $ad;
+        }
+        return $ads;
+    }
+
+    public static function getLatest()
+    {
+        $db = new DBHelper();
+        $data = $db->select()
+            ->from(self::TABLE)
+            ->where('active',1)
+            ->orderBy('id', 'DESC')
+            ->limit(5)->get();
+        $ads = [];
+        foreach($data as $element)
+        {
+            $ad = new Ad();
+            $ad->load($element['id']);
+            $ads[] = $ad;
+        }
+        return $ads;
+    }
+
+    public static function getPopularAds($limit)
+    {
+        $db = new DBHelper();
+        $data = $db->select()
+            ->from(self::TABLE)
+            ->where('active', 1)
+            ->orderBy('visitor', 'DESC')
+            ->limit($limit)->get();
         $ads = [];
         foreach($data as $element)
         {

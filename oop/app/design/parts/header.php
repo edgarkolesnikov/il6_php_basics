@@ -1,50 +1,57 @@
 <html>
-    <head>
-        <title>Atupliusas</title>
-        <link rel="stylesheet" href="<?php echo BASE_URL_WITHOUT_INDEX_PHP.'css/style.css'; ?> ">
-    </head>
+<head>
+    <title> <?php echo $this->data['title'] ?></title>
+    <meta name="description" content="<?= $this->data['meta_description'] ?>">
+    <link rel="stylesheet" href="<?php echo BASE_URL_WITHOUT_INDEX_PHP . 'css/style.css'; ?> ">
+</head>
 <body>
-    <header>
-        <nav>
-            <ul>
+<header>
+    <div class="sliding-part">
+        Auto 10% nuolaida su kodu madafaka10
+    </div>
+    <nav>
+        <ul>
+            <li>
+                <a href="<?php echo $this->url('') ?>">Home Page</a>
+            </li>
+
+            <li>
+                <a href="<?= $this->url('catalog') ?>">All ads</a>
+            </li>
+
+            <?php if ($this->isUserLoged()): ?>
+
                 <li>
-                    <a href="<?php echo BASE_URL ?>">Home Page</a>
+                    <a href="<?= $this->url('catalog/add') ?>">Add new</a>
                 </li>
 
                 <li>
-                    <a href="<?php echo BASE_URL ?>/catalog/all">All ads</a>
-                </li>
-
-                    <?php if($this->isUserLoged()): ?>
-
-
-
-                <li>
-                    <a href="<?php echo BASE_URL ?>/catalog/add">Add new</a>
-                </li>
-
-
-                <li>
-                    <a href="<?php echo BASE_URL ?>/user/edit">User settings</a>
+                    <a href="<?= $this->url('user/edit') ?>">User settings</a>
                 </li>
 
                 <li>
                     <a href="/oop/user/logout">logout</a>
                 </li>
 
+            <?php else: ?>
+            <li>
+                <a href="/oop/user/login">Login</a>
+            </li>
 
-                <?php else: ?>
-                <li>
+            <li>
+                <a href="/oop/user/register">Sign Up</a>
+            </li>
 
-                    <a href="/oop/user/login">Login</a>
-                </li>
+        </ul>
 
-                <li>
-                    <a href="/oop/user/register">Sign Up</a>
-                </li>
+        <?php endif; ?>
 
-            </ul>
-            <?php  endif; ?>
-        </nav>
+        <?php if ($this->isUserAdmin()): ?>
+            <li>
+                <a href="<?= $this->url('Admin') ?>">ADMIN</a>
+            </li>
+        <?php endif; ?>
+    </nav>
 
-    </header>
+
+</header>
