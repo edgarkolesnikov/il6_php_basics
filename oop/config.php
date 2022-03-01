@@ -1,6 +1,6 @@
 <?php
 
-define('BASE_URL', 'http://127.0.0.1:8000/oop/index.php/');
+define('BASE_URL', 'http://127.0.0.1:8000/index.php/');
 define('BASE_URL_WITHOUT_INDEX_PHP', 'http://127.0.0.1:8000/oop/');
 define('SERVERNAME','localhost');
 define('DB_USER','root');
