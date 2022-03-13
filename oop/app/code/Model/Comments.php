@@ -9,91 +9,65 @@ class Comments extends AbstractModel implements ModelInterface
 {
     protected const TABLE = 'comments';
 
-    private $userId;
+    private int $userId;
 
-    private $ip;
+    private string $ip;
 
-    private $message;
+    private string $message;
 
-    private $date;
+    private string $date;
 
-    private $adId;
+    private int $adId;
 
-    /**
-     * @return mixed
-     */
-    public function getUserId()
+
+    public function getUserId(): int
     {
         return $this->userId;
     }
 
-    /**
-     * @param mixed $userId
-     */
-    public function setUserId($userId): void
+    public function setUserId(int $userId): void
     {
         $this->userId = $userId;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getIp()
+
+    public function getIp(): string
     {
         return $this->ip;
     }
 
-    /**
-     * @param mixed $ip
-     */
-    public function setIp($ip): void
+
+    public function setIp(string $ip): void
     {
         $this->ip = $ip;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getMessage()
+    public function getMessage(): string
     {
         return $this->message;
     }
 
-    /**
-     * @param mixed $message
-     */
-    public function setMessage($message): void
+    public function setMessage(string $message): void
     {
         $this->message = $message;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getDate()
+
+    public function getDate(): string
     {
         return $this->date;
     }
 
-    /**
-     * @param mixed $date
-     */
     public function setDate($date): void
     {
         $this->date = $date;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getAdId()
+    public function getAdId(): int
     {
         return $this->adId;
     }
 
-    /**
-     * @param mixed $adId
-     */
     public function setAdId($adId): void
     {
         $this->adId = $adId;
@@ -104,7 +78,7 @@ class Comments extends AbstractModel implements ModelInterface
 // $ip = $_SERVER['REMOTE_ADDR'];
 
 
-    public function assignData()
+    public function assignData(): void
     {
         $this->data = [
             'user_id' => $this->userId,
@@ -116,23 +90,23 @@ class Comments extends AbstractModel implements ModelInterface
 
     }
 
-    public function load($id)
+    public function load(int $id): Comments
     {
         $db = new DBHelper();
-        $data = $db->select()->from(self::TABLE)->where('id', $id)->getOne();
+        $data = $db->select()->from(self::TABLE)->where('id', (string)$id)->getOne();
         $this->id = $data['id'];
         $this->userId = $data['user_id'];
-        $this->ip = $data['ip'];
+        $this->ip = (string)$data['ip'];
         $this->adId = $data['ad_id'];
         $this->message = $data['message'];
         $this->date = $data['date'];
         return $this;
     }
 
-    public static function getAdComments($adId)
+    public static function getAdComments(int $adId): array
     {
         $db = new DBHelper();
-        $data = $db->select()->from(self::TABLE)->where('ad_id', $adId)->get();
+        $data = $db->select()->from(self::TABLE)->where('ad_id', $adId)->orderBy('id', 'DESC')->get();
         $comments = [];
         foreach($data as $element){
             $comment = new Comments();

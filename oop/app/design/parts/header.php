@@ -30,16 +30,20 @@
                 </li>
 
                 <li>
-                    <a href="/oop/user/logout">logout</a>
+                    <a href="<?= $this->url('Message'); ?>">Messages<?= $this->data['new_messages']; ?></a>
+                </li>
+
+                <li>
+                    <a href="user/logout">logout</a>
                 </li>
 
             <?php else: ?>
             <li>
-                <a href="/oop/user/login">Login</a>
+                <a href="user/login">Login</a>
             </li>
 
             <li>
-                <a href="/oop/user/register">Sign Up</a>
+                <a href="user/register">Sign Up</a>
             </li>
 
         </ul>

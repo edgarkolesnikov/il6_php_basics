@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 namespace Controller;
 
 use Core\AbstractControler;
@@ -8,20 +8,20 @@ use Helper\FormHelper;
 use Helper\Url;
 use Model\Ad;
 use Model\Comments;
+use Model\Rating;
 use Model\User as UserModel;
 use Helper\Logger;
 use Core\Interfaces\ControllerInterface;
 
 class Catalog extends AbstractControler implements ControllerInterface
 {
-    public function index()
+    public function index(): void
     {
         $this->data['count'] = Ad::count();
         $page = 0;
         if(isset($_GET['p'])){
             $page = (int)$_GET['p'] -1;
         }
-
         $this->data['ads'] = Ad::getAllAds($page * 3, 3);
         $this->render('catalog/list');
 
@@ -43,10 +43,9 @@ class Catalog extends AbstractControler implements ControllerInterface
 //
 //        $rez = $db->select()->from('ads')->limit($offset, $nomberPerPage)->get();
 //        return $rez;
-
     }
 
-    public function add()
+    public function add(): void
     {
 
         if (!isset($_SESSION['user_id'])) {
@@ -93,7 +92,7 @@ class Catalog extends AbstractControler implements ControllerInterface
 
     }
 
-    public function create()
+    public function create(): void
     {
 
         $slug = Url::slug($_POST['title']);
@@ -107,7 +106,7 @@ class Catalog extends AbstractControler implements ControllerInterface
         $ad->setDescription($_POST['description']);
         $ad->setManufacturerId(1);
         $ad->setModelId(1);
-        $ad->setPrice($_POST['price']);
+        $ad->setPrice((float)$_POST['price']);
         $ad->setYear($_POST['year']);
         $ad->setTypeId(1);
         $ad->setUserId($_SESSION['user_id']);
@@ -116,11 +115,12 @@ class Catalog extends AbstractControler implements ControllerInterface
         $ad->setSlug($slug);
         $ad->setVinCode($_POST['vin_code']);
         $ad->setDate(date('Y/m/d'));
+        $ad->setVisitor(0);
         $ad->save();
-        Url::redirect('catalog/all');
+        Url::redirect('catalog');
     }
 
-    public function edit($id)
+    public function edit(int $id): void
     {
         if(!($_SESSION['user_id'])){
             Url::redirect('');
@@ -183,7 +183,7 @@ class Catalog extends AbstractControler implements ControllerInterface
         $this->render('catalog/create');
     }
 
-    public function update()
+    public function update(): void
     {
         $adId = $_POST['id'];
         $ad = new Ad();
@@ -202,10 +202,7 @@ class Catalog extends AbstractControler implements ControllerInterface
     }
 
 
-
-
-
-    public function show($slug)
+    public function show(string $slug): void
     {
         $ad = new Ad();
         $this->data['ad'] = $ad->loadBySlug($slug);
@@ -236,18 +233,18 @@ class Catalog extends AbstractControler implements ControllerInterface
         }
     }
 
-    public function createComment()
+    public function createComment(): void
     {
         $comment = new Comments();
         $comment->setUserId($_SESSION['user_id']);
         $comment->setMessage($_POST['comment']);
         $comment->setIp($_SERVER['REMOTE_ADDR']);
-        $comment->setadId($_POST['id']);
+        $comment->setAdId($_POST['id']);
         $comment->setDate(DATE('Y/m/d'));
         $comment->save();
 
         $ad = new Ad();
-        $ad->load($_POST['id']);
+        $ad->load((int)$_POST['id']);
         Url::redirect('catalog/show/'.$ad->getSlug());
 
     }
@@ -265,6 +262,22 @@ class Catalog extends AbstractControler implements ControllerInterface
 //            echo 'Irasu nera';
 //        }
 //    }
+
+    public function rateAd()
+    {
+        $rate = new Rating();
+        $userId = $_SESSION['user_id'];
+        $adId = $_POST['ad_id'];
+        $value = $_POST['rating'];
+            $rate -> setUserId((int)$userId);
+            $rate -> setAdId((int)$adId);
+            $rate -> setRating((int)$value);
+            $rate -> save();
+            $ad = new Ad();
+            $ad->load((int)$_POST['ad_id']);
+            Url::redirect('catalog/show/'.$ad->getSlug());
+
+    }
 
 
 

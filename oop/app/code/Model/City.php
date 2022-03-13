@@ -6,35 +6,30 @@ use Helper\DBHelper;
 
 class City
 {
-    private $id;
-    private $name;
+    private int $id;
+    private string $name;
 
-    /**
-     * @return int
-     */
-    public function getId()
+
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function load($id)
+    public function load(int $id): City
     {
         $db = new DBHelper();
-        $city = $db->select()->from('cities')->where('id', $id)->getOne();
+        $city = $db->select()->from('cities')->where('id', (string) $id)->getOne();
         $this->id =$city['id'];
         $this->name=$city['name'];
         return $this;
     }
 
-    public static function getCities()
+    public static function getCities(): array
     {
         $db = new DBHelper();
         $data = $db->select()->from('cities')->get();
@@ -47,13 +42,6 @@ class City
 
         return $cities;
     }
-
-
-
-
-
-
-
 
 
 }

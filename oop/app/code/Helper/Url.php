@@ -1,15 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Helper;
 
 class Url
 {
-    public static function redirect($route)
+    /**
+     * @param string $route
+     */
+    public static function redirect(string $route): void
     {
         header('location: ' . BASE_URL . $route);
     }
 
-    public static function link($path, $param = null)
+    /**
+     * @param string $path
+     * @param string|null $param
+     * @return string
+     */
+    public static function link(string $path, ?string $param = null): string
     {
         $link = BASE_URL.$path;
 
@@ -19,7 +29,11 @@ class Url
         return $link;
     }
 
-    public static function slug($string)
+    /**
+     * @param string $string
+     * @return string
+     */
+    public static function slug(string $string): string
     {
         $string = strtolower($string);
         $string = str_replace(' ', '-', $string);

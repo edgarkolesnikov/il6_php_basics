@@ -11,243 +11,172 @@ class Ad extends AbstractModel implements ModelInterface
 {
     protected const TABLE = 'ads';
 
-    private $title;
+    private string $title;
 
-    private $description;
+    private string $description;
 
-    private $manufacturerId;
+    private int $manufacturerId;
 
-    private $modelId;
+    private int $modelId;
 
-    private $price;
+    private float $price;
 
-    private $year;
+    private int $year;
 
-    private $typeId;
+    private int $typeId;
 
-    private $userId;
+    private int $userId;
 
-    private $image;
+    private string $image;
 
-    private $active;
+    private int $active;
 
-    private $slug;
+    private string $slug;
 
-    private $vinCode;
+    private string $vinCode;
 
-    private $date;
+    private string $date;
 
-    private $visitor;
+    private int $visitor;
 
-    /**
-     * @return mixed
-     */
-    public function getVisitor()
+
+    public function getVisitor(): int
     {
         return $this->visitor;
     }
 
-    /**
-     * @param mixed $visitor
-     */
-    public function setVisitor($visitor): void
+    public function setVisitor(int $visitor): void
     {
         $this->visitor = $visitor;
     }
 
-    public function getDate()
+    public function getDate(): string
     {
         return $this->date;
     }
 
-    public function setDate($date)
+    public function setDate(string $date): void
     {
         $this->date = $date;
     }
 
-    public function getVinCode()
+    public function getVinCode(): string
     {
         return $this->vinCode;
     }
 
-    public function setVinCode($vinCode)
+    public function setVinCode(string $vinCode): void
     {
         $this->vinCode = $vinCode;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getSlug()
+    public function getSlug(): string
     {
         return $this->slug;
     }
 
-    /**
-     * @param mixed $slug
-     */
-    public function setSlug($slug)
+    public function setSlug($slug): void
     {
         $this->slug = $slug;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getActive()
+    public function getActive(): int
     {
         return $this->active;
     }
 
-    /**
-     * @param mixed $active
-     */
-    public function setActive($active)
+    public function setActive(int $active): void
     {
         $this->active = $active;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getImage()
+    public function getImage(): string
     {
         return $this->image;
     }
 
-    /**
-     * @param mixed $image
-     */
-    public function setImage($image)
+    public function setImage(string $image): void
     {
         $this->image = $image;
     }
 
 
-    /**
-     * @return mixed
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * @param mixed $title
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
 
-    /**
-     * @param mixed $description
-     */
-    public function setDescription($description)
+    public function setDescription(string $description): void
     {
         $this->description = $description;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getManufacturerId()
+    public function getManufacturerId(): int
     {
         return $this->manufacturerId;
     }
 
-    /**
-     * @param mixed $manufacturerId
-     */
-    public function setManufacturerId($manufacturerId)
+    public function setManufacturerId(int $manufacturerId): void
     {
         $this->manufacturerId = $manufacturerId;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getModelId()
+    public function getModelId(): int
     {
         return $this->modelId;
     }
 
-    /**
-     * @param mixed $modelId
-     */
-    public function setModelId($modelId)
+    public function setModelId(int $modelId): void
     {
         $this->modelId = $modelId;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getPrice()
+    public function getPrice(): float
     {
         return $this->price;
     }
 
-    /**
-     * @param mixed $price
-     */
-    public function setPrice($price)
+    public function setPrice(float $price): void
     {
         $this->price = $price;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getYear()
+    public function getYear(): string
     {
         return $this->year;
     }
 
-    /**
-     * @param mixed $year
-     */
-    public function setYear($year)
+    public function setYear(string $year): void
     {
         $this->year = $year;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getTypeId()
+    public function getTypeId(): int
     {
         return $this->typeId;
     }
 
-    /**
-     * @param mixed $typeId
-     */
-    public function setTypeId($typeId)
+    public function setTypeId(int $typeId): void
     {
         $this->typeId = $typeId;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getUserId()
+    public function getUserId(): int
     {
         return $this->userId;
     }
 
-    /**
-     * @param mixed $userId
-     */
-    public function setUserId($userId)
+    public function setUserId(int $userId): void
     {
         $this->userId = $userId;
     }
@@ -259,7 +188,7 @@ class Ad extends AbstractModel implements ModelInterface
         }
     }
 
-    public function assignData()
+    public function assignData(): void
     {
         $this->data =  [
             'title' => $this->title,
@@ -279,7 +208,7 @@ class Ad extends AbstractModel implements ModelInterface
         ];
     }
 
-    public function load($id)
+    public function load(int $id): Ad
     {
         $db = new DBHelper();
         $ad = $db->select()->from(self::TABLE)->where('id', $id)->getOne();
@@ -294,16 +223,15 @@ class Ad extends AbstractModel implements ModelInterface
             $this->typeId = $ad['type_id'];
             $this->userId = $ad['user_id'];
             $this->image = $ad['image'];
-            $this->active = $ad['active'];
+            $this->active = (int)$ad['active'];
             $this->slug = $ad['slug'];
             $this->vinCode = $ad['vin_code'];
             $this->date = $ad['date'];
             $this->visitor = $ad['visitor'];
-
         }
         return $this;
     }
-    public function loadBySlug($slug)
+    public function loadBySlug($slug): ?Ad
     {
         $db = new DBHelper();
         $rez = $db->select()->from(self::TABLE)->where('slug', $slug)->getOne();
@@ -311,11 +239,11 @@ class Ad extends AbstractModel implements ModelInterface
             $this->load($rez['id']);
             return $this;
         }else{
-            return false;
+            return null;
         }
     }
 
-    public static function getAllAds($page = null, $limit = null)
+    public static function getAllAds(?int $page = null, ?int $limit = null): array
     {
         $db = new DBHelper();
         $data= $db->select()->from(self::TABLE)
@@ -337,7 +265,7 @@ class Ad extends AbstractModel implements ModelInterface
         return $ads;
     }
 
-    public static function getAdsForAdmin($page = null, $limit = null)
+    public static function getAdsForAdmin(?int $page = null, ?int $limit = null): array
     {
         $db = new DBHelper();
         $data= $db->select()->from(self::TABLE);
@@ -358,7 +286,7 @@ class Ad extends AbstractModel implements ModelInterface
         return $ads;
     }
 
-    public static function getLatest()
+    public static function getLatest(): array
     {
         $db = new DBHelper();
         $data = $db->select()
@@ -376,7 +304,7 @@ class Ad extends AbstractModel implements ModelInterface
         return $ads;
     }
 
-    public static function getPopularAds($limit)
+    public static function getPopularAds(int $limit): array
     {
         $db = new DBHelper();
         $data = $db->select()

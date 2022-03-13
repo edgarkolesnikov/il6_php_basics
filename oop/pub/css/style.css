@@ -72,11 +72,11 @@ header .sliding-part{
 
 .box .column-right{
     float: right;
-    width: 550px;
+    width: 250px;
 }
 .box .column-left{
     float: left;
-    width: 550px;
+    width: 250px;
 }
 
 .box .column-left .image-wrapper img{
@@ -123,4 +123,35 @@ header .sliding-part{
 
 body{
     background: #cccccc;
+}
+
+.message-box{
+    border: 1px solid #888888;
+    border-radius: 20px;
+    padding: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    width: 70%;
+}
+.my{
+    background: #ccff00;
+    margin-left: auto;
+}
+
+.him{
+    background: blanchedalmond;
+}
+
+.chat-box textarea{
+    width: 100%;
+}
+
+.btn.submit{
+    background: #ccff00;
+    border: 0;
+    border-radius: 0;
+}
+
+.last-message-body.bolt{
+    font-weight: bold;
 }

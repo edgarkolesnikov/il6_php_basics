@@ -6,6 +6,48 @@
         <div class="image-wrapper">
             <img src="<?= $ad->getImage() ?>">
         </div>
+            <div class="avg-rating">
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+        <?php
+            $userId = $_SESSION['user_id'];
+            $adId = $ad->getId();
+
+
+        $data = \Model\Rating::checkIfUserVoted($userId, $adId);
+        if(isset($data) == true ):
+
+            $avg = \Model\Rating::countAverageRating($ad->getId());
+            ?>
+                <h3>Vidurkis <?= round($avg[0],1); ?></h3>
+            </div>
+            <?php else: ?>
+        <div class="rating">
+            <form action="<?= BASE_URL.'catalog/rateAd' ?>" method="POST">
+                <p>Skelbimo ivertinimas</p>
+                <input type="hidden" name="ad_id" value="<?= $ad->getId(); ?>"
+                <input type="radio" id="html" name="rating" value="1">
+                <label for="rating">1</label>
+                <input type="radio" id="css" name="rating" value="2">
+                <label for="rating">2</label>
+                <input type="radio" id="javascript" name="rating" value="3">
+                <label for="rating">3</label>
+                <input type="radio" id="javascript" name="rating" value="4">
+                <label for="rating">4</label>
+                <input type="radio" id="javascript" name="rating" value="5">
+                <label for="rating">5</label>
+                <input type="submit" name="submit" value="Ok">
+
+            </form>
+        </div>
+
+        <?php endif; ?>
+
         <div id="price" class="price">
             <h2>Price: <?= $ad->getPrice(); ?></h2>
         </div>
@@ -17,10 +59,15 @@
                 Year: <?= $ad->getYear(); ?> <br>
                 Vin: <?= $ad->getVinCode(); ?> <br>
             </p>
-            <a href="<?php echo $this->url('catalog/edit', $ad->getId()); ?>"> Edit </a>
+            <a href="<?php echo $this->url('catalog/edit/', $ad->getId()); ?>"> Redaguoti </a>
         </div>
     </div>
-    <br>
+
+    <?php if($this->isUserLoged() && $ad->getUserId() !== $_SESSION['user_id']): ?>
+    <a href="<?=$this->url('message/chat/'.$ad->getUserId()) ?>">
+        Rasyti zinute savininkui
+    </a>
+    <?php endif;  ?>
     <div class="type-comment">
         <h4>Palikti komentara</h4>
         <?= $this->data['comment']; ?>

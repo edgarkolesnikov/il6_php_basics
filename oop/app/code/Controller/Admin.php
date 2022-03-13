@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 namespace Controller;
 
 use Core\AbstractControler;
@@ -29,24 +29,24 @@ class Admin extends AbstractControler implements ControllerInterface
         }
     }
 
-    public function index()
+    public function index(): void
     {
         $this->renderAdmin('index');
     }
 
-    public function users()
+    public function users(): void
     {
         $this->data['users'] = User::getAllUser();
         $this->renderAdmin('users/list');
     }
 
-    public function ads()
+    public function ads(): void
     {
         $this->data['ads'] = Ad::getAdsForAdmin();
         $this->renderAdmin('ads/list');
     }
 
-    public function useredit($id)
+    public function useredit(int $id): void
     {
         $user = new User();
         $user->load($id);
@@ -122,11 +122,11 @@ class Admin extends AbstractControler implements ControllerInterface
         $this->renderAdmin('users/edit');
     }
 
-    public function userupdate()
+    public function userupdate(): void
     {
         $userId = $_POST['user_id'];
         $user = new UserModel();
-        $user->load($userId);
+        $user->load((int)$userId);
 
         $user->setName($_POST['name']);
         $user->setLastName($_POST['last_name']);
@@ -146,7 +146,7 @@ class Admin extends AbstractControler implements ControllerInterface
         Url::redirect('admin/users');
     }
 
-    public function adedit($id)
+    public function adedit(int $id): void
     {
         $ad = new Ad($id);
 
@@ -214,7 +214,7 @@ class Admin extends AbstractControler implements ControllerInterface
     }
 
 
-    public function adupdate()
+    public function adupdate(): void
     {
         $id = $_POST['ad_id'];
         $ad = new Ad();
@@ -234,14 +234,14 @@ class Admin extends AbstractControler implements ControllerInterface
         Url::redirect('admin/ads');
     }
 
-    public function massadupdate()
+    public function massadupdate(): void
     {
         $action = $_POST['action'];
         $ids = $_POST['ad_id'];
         if ($action == self::ACTIVE || $action == self::NOT_ACTIVE) {
             foreach ($ids as $id) {
                 $ad = new Ad($id);
-                $ad->setActive($action);
+                $ad->setActive((int)$action);
                 $ad->save();
             }
         } elseif ($action == self::DELETE) {
@@ -253,14 +253,14 @@ class Admin extends AbstractControler implements ControllerInterface
         Url::redirect('admin/ads');
     }
 
-    public function massuserupdate()
+    public function massuserupdate(): void
     {
         $action = $_POST['action'];
         $ids = $_POST['user_id'];
         if ($action == self::ACTIVE || $action == self::NOT_ACTIVE) {
             foreach ($ids as $id) {
-                $user = new User($id);
-                $user->setActive($action);
+                $user = new User((int)$id);
+                $user->setActive((int)$action);
                 $user->save();
             }
         } elseif ($action == self::DELETE) {
