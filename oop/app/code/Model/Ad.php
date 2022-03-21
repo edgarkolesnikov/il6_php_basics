@@ -208,12 +208,12 @@ class Ad extends AbstractModel implements ModelInterface
         ];
     }
 
-    public function load(int $id): Ad
+    public function load(int $id): object
     {
         $db = new DBHelper();
-        $ad = $db->select()->from(self::TABLE)->where('id', $id)->getOne();
+        $ad = $db->select()->from(self::TABLE)->where('id',$id)->getOne();
         if(!empty($ad)){
-            $this->id = $ad['id'];
+            $this->id = (int)$ad['id'];
             $this->title = $ad['title'];
             $this->manufacturerId = $ad['manufacturer_id'];
             $this->description = $ad['description'];
@@ -321,5 +321,6 @@ class Ad extends AbstractModel implements ModelInterface
         }
         return $ads;
     }
+
 
 }

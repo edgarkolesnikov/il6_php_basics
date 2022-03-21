@@ -99,7 +99,10 @@ class Message extends AbstractModel implements ModelInterface
     public function load(int $id): object
     {
         $db = new DBHelper();
-        $data = $db->select()->from(self::TABLE)->where('id', $id)->getOne();
+        $data = $db->select()
+            ->from(self::TABLE)
+            ->where('id', $id)
+            ->getOne();
         if(!empty($data)) {
             $this->id = (int)$data['id'];
             $this->senderId = (int)$data['sender_id'];
