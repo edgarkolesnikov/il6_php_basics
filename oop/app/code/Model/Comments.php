@@ -106,7 +106,11 @@ class Comments extends AbstractModel implements ModelInterface
     public static function getAdComments(int $adId): array
     {
         $db = new DBHelper();
-        $data = $db->select()->from(self::TABLE)->where('ad_id', $adId)->orderBy('id', 'DESC')->get();
+        $data = $db->select()
+            ->from(self::TABLE)
+            ->where('ad_id', $adId)
+            ->orderBy('id', 'DESC')
+            ->get();
         $comments = [];
         foreach($data as $element){
             $comment = new Comments();
