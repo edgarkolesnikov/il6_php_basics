@@ -326,3 +326,4 @@
 2022/03/21 19:20:54 SELECT *  FROM ads  WHERE id="21"
 2022/03/21 19:20:54 SELECT *  FROM users  WHERE id="1"
 2022/03/21 19:20:54 SELECT *  FROM cities  WHERE id="3"
+2022/03/21 21:38:14 SELECT COUNT(*)  FROM messages  WHERE receiver_id="1" AND status="0"

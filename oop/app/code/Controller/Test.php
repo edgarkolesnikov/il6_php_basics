@@ -38,20 +38,13 @@ class Test extends AbstractControler implements ControllerInterface
          print_r($newArray);
          echo 'Didziausias lyginis skaicius: ' .$maxEven. '<pre>';
          echo 'Sumazintas 40% skaicius = '. $newMax. '<pre>';
-        $updatedArray = array_replace($newArray,
-            array_fill_keys(
-                array_keys($newArray, $maxEven),
-                $newMax));
+        $updatedArray = array_replace($newArray, array_fill_keys(array_keys($newArray, $maxEven), $newMax));
         echo 'Naujas pakeistas masyvas:'.'<pre>';
         print_r($updatedArray);
-
     }
-
 // Turime array:
 // [1000, 2303, 444, 5554, 9993, 45454, 4343, 65656, 65659, 43434, 92, 23456, 758595, 344433]
 // rasti didžiausią lyginį skaičių, sumažinti jį 40% ir atspauzdinti toki pat array, su pakeistu skaičiumi.
-
-
 
 }
 
